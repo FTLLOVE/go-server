@@ -1,13 +1,12 @@
-package Redis
+package configInit
 
 import (
 	"github.com/go-redis/redis/v7"
-	"go.mod/configInit"
 	"log"
 )
 var client *redis.Client
 
-func redisInit(config configInit.Config)  {
+func redisInit(config Config)  {
 	client = redis.NewClient(&redis.Options{
 		Addr: config.Redis.Address,
 		Password: config.Redis.Password,
@@ -51,3 +50,33 @@ func EvalSHA(SHA string,args[]string)(interface{},error)  {
 	return val,err
 }
 
+//set time forever
+func SetTime(key string,values interface{})(string,error)  {
+	val,err:=client.Set(key,values,0).Result()
+	return val,err
+}
+
+//设置hash值
+func SetHash(key string,field map[string]interface{})(bool,error) {
+	return client.HMSet(key,field).Result()
+}
+
+//获取hash表多个字段值
+func GetMap(key string,fields ...string) ([]interface{},error) {
+	return client.HMGet(key,fields...).Result()
+}
+
+
+func SetAdd(key string,field string)(int64,error)  {
+	return  client.SAdd(key,field).Result()
+}
+
+//判断是否是集合的值
+func SetIsMember(key string,field string)(bool,error)  {
+	return client.SIsMember(key,field).Result()
+}
+
+//获取集合所有成员
+func GetMembers(key string)([]string,error)  {
+	return client.SMembers(key).Result()
+}

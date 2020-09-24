@@ -5,3 +5,11 @@ redis:
   maxIdle: 1000
   MaxActive: 2000
   Timeout: 200
+database:
+  type: mysql
+  user: root
+  password: root
+  dbName: goseckill
+  address: 127.0.0.1:3306
+  maxIdle: 100
+  maxOpen: 150
