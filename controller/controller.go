@@ -1,13 +1,14 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 type HelloReq struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
+	Id int `json:"id" form:"id"`
+	Name string `json:"name" form:"name"`
 }
 
 type HelloRsp struct {
@@ -16,6 +17,7 @@ type HelloRsp struct {
 		Description string `json:"description"`
 		Data struct{
 			Name string `json:"name"`
+			Id int `json:"id"`
 		} `json:"data"`
 	}
 	
@@ -26,6 +28,8 @@ func GetTest(c*gin.Context)  {
 	if err:=c.Bind(&req);err!=nil{
 		log.Fatal("tset")
 	}
+	fmt.Println(req)
 	rsp.Rsp.Data.Name = req.Name
+	rsp.Rsp.Data.Id = req.Id
 	c.JSON(200,rsp)
 }

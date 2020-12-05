@@ -5,7 +5,6 @@ import (
 	"go-server/controller"
 )
 func Gininit(router *gin.Engine)  {
-	router = gin.Default()
 
 	st:=router.Group("/open")
 	st.GET("/hello", controller.GetTest)
