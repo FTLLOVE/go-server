@@ -6,8 +6,8 @@ import (
 
 
 func QueryCoupon(ctx *gin.Context)  {
-	sellName:=ctx.Param("username")
-	couponName:=ctx.Param("name")
+	//sellName:=ctx.Param("username")
+	//couponName:=ctx.Param("name")
 
 
 }

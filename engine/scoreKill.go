@@ -46,8 +46,8 @@ func IsEvalError(err error)bool{
 
 
 //执行redis原子秒杀
-func AtomicSecKill(userName string,sellName string,couponName string)(int 64,error)  {
+func AtomicSecKill(userName string,sellName string,couponName string)(int64,error)  {
 	//预先加载原子性的lua脚本
-	hasCouponKey:=
+	return 0,nil
 }
 
