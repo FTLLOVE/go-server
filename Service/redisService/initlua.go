@@ -1,7 +1,7 @@
 package redisService
 
 import (
-
+	"go-server/data"
 )
 
 const secKillScript = `
@@ -39,5 +39,13 @@ var secKillSHA string
 
 //优惠券对应数据加载到缓存，防止缓存穿透
 func preHeatKeys()  {
-	
+
+}
+
+func init()  {
+	//加载lua脚本
+	secKillSHA  = data.LoadScript(secKillScript)
+
+	//预热
+	preHeatKeys()
 }
