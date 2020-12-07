@@ -1,7 +1,9 @@
-package engine
+package redisService
 
 import (
+	"errors"
 	"fmt"
+	"go-server/data"
 )
 
 //定义返回error
@@ -48,6 +50,16 @@ func IsEvalError(err error)bool{
 //执行redis原子秒杀
 func AtomicSecKill(userName string,sellName string,couponName string)(int64,error)  {
 	//预先加载原子性的lua脚本
-
+	userHasCouponKey := getHasCouponKeyByUser(userName)
+	couponKey:=getCouponKeyByName(couponName)
+	res,err:=data.EvalSHA(secKillSHA,[]string{userHasCouponKey,couponName,couponKey})
+	if err!=nil{
+		return -1,errors.New("eval error")
+	}
+	couponRes,ok :=res.(int64)
+	if !ok{
+		return -1, errors.New("type error")
+	}
+	//不同的错误提示信息
 }
 
