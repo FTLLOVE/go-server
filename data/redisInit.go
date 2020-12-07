@@ -1,12 +1,13 @@
-package configInit
+package data
 
 import (
 	"github.com/go-redis/redis/v7"
+	"go-server/config"
 	"log"
 )
 var client *redis.Client
 
-func redisInit(config Config)  {
+func redisInit(config config.Config){
 	client = redis.NewClient(&redis.Options{
 		Addr: config.Redis.Address,
 		Password: config.Redis.Password,
@@ -56,12 +57,12 @@ func SetTime(key string,values interface{})(string,error)  {
 	return val,err
 }
 
-//设置hash值
+//设置hash值 返回bool值
 func SetHash(key string,field map[string]interface{})(bool,error) {
 	return client.HMSet(key,field).Result()
 }
 
-//获取hash表多个字段值
+//获取hash表多个字段值hget 只能获取一个字段
 func GetMap(key string,fields ...string) ([]interface{},error) {
 	return client.HMGet(key,fields...).Result()
 }

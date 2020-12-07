@@ -1,17 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"go-server/router"
+	"go-server/gin_server"
 )
-
-const port = 9527
+ var listen string = "9527"
 
 func main(){
-	route:= gin.New()
-	router.Gininit(route)
-	if err := route.Run(fmt.Sprintf(":%d", port)); err != nil {
-		println("Error when running server. " + err.Error())
-	}
+	//启动服务
+	gin_server.StartHttpServer(listen)
+
 }

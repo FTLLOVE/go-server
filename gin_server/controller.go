@@ -1,4 +1,4 @@
-package controller
+package gin_server
 
 import (
 	"fmt"
@@ -20,7 +20,6 @@ type HelloRsp struct {
 			Id int `json:"id"`
 		} `json:"data"`
 	}
-	
 }
 func GetTest(c*gin.Context)  {
 	req:= HelloReq{}
