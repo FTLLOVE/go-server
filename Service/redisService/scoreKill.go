@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go-server/data"
+	"log"
 )
 
 //定义返回error
@@ -61,5 +62,20 @@ func AtomicSecKill(userName string,sellName string,couponName string)(int64,erro
 		return -1, errors.New("type error")
 	}
 	//不同的错误提示信息
+	switch {
+	case couponRes==-1:
+		return -1,errors.New("hasCoupon")
+	case couponRes==-2:
+		return -1,errors.New("noCoupon")
+	case couponRes==-3:
+		return -1,errors.New("noRemain")
+	case couponRes==1:
+		return couponRes,nil
+	default:
+		{
+			log.Fatal("Unexpected return value")
+			return -1,errors.New("no return value")
+		}
+	}
 }
 
