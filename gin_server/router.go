@@ -10,6 +10,8 @@ func StartHttpServer(listen string)  {
 	st:=router.Group("/open")
 	st.GET("/hello", GetTest)
 
+	//异步消费运行
+	RunConsumer()
 	//start
 	if err := router.Run(listen); err != nil {
 		println("Error when running server. " + err.Error())
