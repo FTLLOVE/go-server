@@ -1,5 +1,7 @@
 package model
 
+import "github.com/jinzhu/gorm"
+
 type Coupon struct {
 	Id         int64  `json:"id" gorm:"id"`
 	UserName   string `json:"user_name" gorm:"user_name"`
@@ -63,4 +65,34 @@ func DtoCustomerCoupon(coupon []Coupon) []CustomerCoupon {
 	}
 
 	return custCoupon
+}
+func (m *Coupon)Table()string  {
+	return "coupon"
+}
+func (m*Coupon)GetCoupon(db *gorm.DB)(Coupon,error){
+	var coupon Coupon
+	err:=db.Table(m.Table()).Where("coupon_name = ?",m.CouponName).Find(&coupon).Error
+	return coupon,err
+}
+
+//插入数据
+func (m *Coupon)Insert(db *gorm.DB)error  {
+	db.Begin()
+	defer db.Commit()
+	err:=db.Table(m.Table()).Where("id = ?",m.Id).Error
+	if err!=gorm.ErrRecordNotFound&&err!=nil{
+		return err
+	}
+	if err==gorm.ErrRecordNotFound{
+		err = db.Table(m.Table()).Create(m).Error
+		if err!=nil{
+			return err
+		}
+	}
+	return err
+}
+//更新数据
+func (m*Coupon)Update(db *gorm.DB,ma map[string]interface{})error  {
+	err:=db.Table(m.Table()).Updates(ma).Error
+	return err
 }

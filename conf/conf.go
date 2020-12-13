@@ -1,4 +1,4 @@
-package config
+package conf
 
 import (
 	"io/ioutil"
@@ -12,7 +12,19 @@ var configFile []byte
 const path string = "config-dev.yaml"
 
 type Config struct {
-	Redis Redis `json:"redis"`
+	Database Database `yaml:"database"`
+	Redis Redis `yaml:"redis"`
+	
+}
+//mysql
+type Database struct {
+	Type string `yaml:"type"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	DbName   string `yaml:"dbName"`
+	Address  string `yaml:"address"`
+	MaxIdle  int    `yaml:"maxIdle"`
+	MaxOpen  int    `yaml:"maxOpen"`
 }
 
 type Redis struct {
@@ -35,6 +47,7 @@ func init()  {
 	var err error
 	configFile,err = ioutil.ReadFile(path)
 	if err!=nil{
+		//启动失败退出程序
 		log.Fatal("redis init file open err : %v",err)
 	}
 

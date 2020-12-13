@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-server/Service/redisService"
 	"go-server/model"
+	"log"
+	"net/http"
 )
 
 type FetchCouponReq struct {
@@ -33,6 +35,19 @@ func FetchCoupon(c*gin.Context)  {
 	_,err:=redisService.AtomicSecKill(req.UserName,"sellname",req.CouponName)
 	if err!=nil{
 		coupon:=redisService.GetCoupon(req.CouponName)
-
+		secKillChannel<-secKilMessage{req.UserName,coupon}
+		c.JSON(http.StatusCreated, gin.H{"err": ""})
+		return
+	}else{
+		if redisService.IsEvalError(err) {
+			log.Printf("Server error" + err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"evalErr": err.Error()})
+			return
+		} else {
+			//log.Println("Fail to fetch coupon. " + err.Error())
+			c.JSON(http.StatusNoContent, gin.H{})
+			return
+		}
+		// 可在此将err输出到log.
 	}
 }

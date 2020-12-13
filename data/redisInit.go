@@ -2,12 +2,12 @@ package data
 
 import (
 	"github.com/go-redis/redis/v7"
-	"go-server/config"
+	"go-server/conf"
 	"log"
 )
 var client *redis.Client
 
-func redisInit(config config.Config){
+func initRedis(config conf.Config){
 	client = redis.NewClient(&redis.Options{
 		Addr: config.Redis.Address,
 		Password: config.Redis.Password,
