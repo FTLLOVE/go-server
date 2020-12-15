@@ -4,9 +4,18 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-server/Service/redisService"
+	"go-server/basic"
+	"go-server/data"
 	"go-server/model"
 	"log"
 	"net/http"
+)
+
+const (
+	MinUserNameLen = 1
+	MinPasswordLen = 1
+	NormalCustomer = 1
+	NormalSeller   = 2
 )
 
 type FetchCouponReq struct {
@@ -50,4 +59,54 @@ func FetchCoupon(c*gin.Context)  {
 		}
 		// 可在此将err输出到log.
 	}
+}
+
+type RegisterUserReq struct {
+	UserName string `json:"user_name" form:"UserName" binding:"required"`
+	PassWord string `json:"pass_word" form:"pass_word" binding:"required"`
+	Kind  	 int `json:"kind" form:"kind"` //买家or卖家
+}
+
+type RegisterUserRsp struct {
+	Status string `json:"status"`
+	Description string `json:"description"`
+	Data struct{
+		
+	} `json:"data"`
+}
+
+func RegisterUser(c *gin.Context) {
+	req := RegisterUserReq{}
+	rsp := RegisterUserRsp{}.Data
+	if err := c.Bind(&req); err != nil {
+		log.Println("RegisterUser param error", err.Error())
+		basic.ResponseError(c, rsp, err.Error())
+		return
+	}
+	if len(req.UserName) < MinUserNameLen {
+		log.Println("user name length too short")
+		basic.ResponseError(c, rsp, "name too short")
+		return
+	}
+	if len(req.PassWord) < MinPasswordLen {
+		log.Println("password length too short")
+		basic.ResponseError(c, rsp, "password")
+		return
+	}
+	if req.Kind == 0 {
+		log.Println("kind is error")
+		basic.ResponseError(c, rsp, "kind is error")
+		return
+	}
+
+	//加入用户
+	req.PassWord = model.GetMd5(req.PassWord) //MD5加密，base64编码方便网络传输
+	err := new(model.User).Insert(data.Db, req.UserName, req.PassWord, req.Kind)
+	if err != nil {
+		log.Println("create User error", err.Error())
+		basic.ResponseError(c, rsp, "user Register error"+err.Error())
+		return
+	}
+	basic.ResponseOk(c, rsp, "OK")
+	return
 }

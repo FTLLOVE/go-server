@@ -3,6 +3,7 @@ package model
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/jinzhu/gorm"
 	_"github.com/jinzhu/gorm"
 	_"os"
 )
@@ -28,6 +29,19 @@ type User struct{
 	Username string `json:"username" gorm:"username"`
 	Password string `json:"password" gorm:"password"`
 	Kind int `json:"kind" gorm:"kind"`
+}
+
+func (u *User)TableName()string  {
+	return "user"
+}
+//插入用户
+func (u *User)Insert(db *gorm.DB,userName string,passWord string,kind int)error  {
+	 user :=User{
+	 	Username: userName,
+	 	Password: passWord,
+	 	Kind: kind,
+	 }
+	return db.Table(u.TableName()).Create(user).Error
 }
 
 func (user User)IsNormalUser()bool  {
