@@ -12,12 +12,12 @@ type HelloReq struct {
 }
 
 type HelloRsp struct {
-	Rsp struct{
-		Status string `json:"status"`
+	Rsp struct {
+		Status      string `json:"status"`
 		Description string `json:"description"`
-		Data struct{
+		Data        struct {
 			Name string `json:"name"`
-			Id int `json:"id"`
+			Id   int    `json:"id"`
 		} `json:"data"`
 	}
 }

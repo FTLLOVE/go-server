@@ -37,7 +37,6 @@ type FetchCouponRsp struct {
 //失败返回错误信息，成功通过channel异步落库
 func FetchCoupon(c*gin.Context)  {
 	req:=FetchCouponReq{}
-	rsp:=FetchCouponRsp{}.Rsp
 	if err:=c.Bind(&req);err!=nil{
 		fmt.Println("FetchCoupon prarm err",err.Error())
 	}
@@ -57,9 +56,6 @@ func FetchCoupon(c*gin.Context)  {
 			c.JSON(http.StatusNoContent, gin.H{})
 			return
 		}
-		// 可在此将err输出到log.
-		basic.ResponseOk(c,rsp,"OK")
-		return
 	}
 }
 
