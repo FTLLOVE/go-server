@@ -4,8 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/jinzhu/gorm"
-	_"github.com/jinzhu/gorm"
-	_"os"
 )
 
 const (
@@ -26,6 +24,7 @@ type RegisterUser struct {
 
 type User struct{
 	Id int `json:"id" gorm:"primary_key;auto_increment"`
+	UserId string `json:"user_id" gorm:"user_id"`
 	Username string `json:"username" gorm:"username"`
 	Password string `json:"password" gorm:"password"`
 	Kind int `json:"kind" gorm:"kind"`
@@ -34,9 +33,24 @@ type User struct{
 func (u *User)TableName()string  {
 	return "user"
 }
+
+//uuid 查询user
+func (u *User)GetUserByUserId(db *gorm.DB,userId string)(User,error) {
+	var user User
+	err:=db.Table(u.TableName()).Where("user_id = ?",userId).Find(&user).Error
+	return user,err
+}
+
+func (u *User)GetUserByName(db *gorm.DB,userName string)(User,error){
+	var user User
+	err:=db.Table(u.TableName()).Where("username = ?",userName).Find(&user).Error
+	return user,err
+}
+
 //插入用户
-func (u *User)Insert(db *gorm.DB,userName string,passWord string,kind int)error  {
+func (u *User)Insert(db *gorm.DB,userId string,userName string,passWord string,kind int)error  {
 	 user :=User{
+	 	UserId: userId,
 	 	Username: userName,
 	 	Password: passWord,
 	 	Kind: kind,

@@ -3,6 +3,8 @@ package gin_server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/satori/go.uuid"
 	"go-server/Service/redisService"
 	"go-server/basic"
 	"go-server/data"
@@ -17,6 +19,12 @@ const (
 	NormalCustomer = 1
 	NormalSeller   = 2
 )
+
+//用库生成uuid
+func GetUUID()string {
+	id := uuid.NewV4()
+	return id.String()
+}
 
 type FetchCouponReq struct {
 	UserName string `json:"user_name" form:"user_name"`
@@ -98,9 +106,18 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
+	user:=new(model.User)
+	//判断是否存在
+	_,err:=user.GetUserByName(data.Db,req.UserName)
+	if err!=nil&&err!=gorm.ErrRecordNotFound{
+		basic.ResponseError(c,rsp,"userName exist")
+		return
+	}
+	//生成uuid
+	userId:=GetUUID()
 	//加入用户
 	req.PassWord = model.GetMd5(req.PassWord) //MD5加密，base64编码方便网络传输
-	err := new(model.User).Insert(data.Db, req.UserName, req.PassWord, req.Kind)
+	err = new(model.User).Insert(data.Db, userId,req.UserName, req.PassWord, req.Kind)
 	if err != nil {
 		log.Println("create User error", err.Error())
 		basic.ResponseError(c, rsp, "user Register error"+err.Error())

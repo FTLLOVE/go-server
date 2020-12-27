@@ -16,6 +16,7 @@ const ErrMsg = "errMsg"
 var (
 	SignKey  = "Secret Key"
 	Auth  = "Authorization"
+	Issuer  = "this is a issuer"
 )
 
 //接口调用时间

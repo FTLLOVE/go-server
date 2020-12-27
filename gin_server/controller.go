@@ -25,7 +25,7 @@ func GetTest(c*gin.Context)  {
 	req:= HelloReq{}
 	rsp:= HelloRsp{}
 	if err:=c.Bind(&req);err!=nil{
-		log.Fatal("tset")
+		log.Fatal("test")
 	}
 	fmt.Println(req)
 	rsp.Rsp.Data.Name = req.Name
